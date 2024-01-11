@@ -32,6 +32,7 @@ const (
 	RBRACE    = "}"
 	EQ        = "=="
 	NOT_EQ    = "!="
+	NEWLINE   = "NEWLINE"
 	FUNCTION  = "FUNCTION"
 	LET       = "LET"
 	RETURN    = "RETURN"
