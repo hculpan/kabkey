@@ -51,6 +51,11 @@ if (5 < 10) {
 10 != 9;
 
 let a = "This is a string!";
+
+let i = 0;
+while (i < 10) {
+    let i = i + 1;
+}
 `
 
 	tests := []struct {
@@ -136,7 +141,27 @@ let a = "This is a string!";
 		{token.ASSIGN, "=", 24, 7},
 		{token.STRING, "This is a string!", 24, 9},
 		{token.SEMICOLON, ";", 24, 28},
-		{token.EOF, "", 25, 1},
+		{token.LET, "let", 26, 1},
+		{token.IDENT, "i", 26, 5},
+		{token.ASSIGN, "=", 26, 7},
+		{token.INT, "0", 26, 9},
+		{token.SEMICOLON, ";", 26, 10},
+		{token.WHILE, "while", 27, 1},
+		{token.LPAREN, "(", 27, 7},
+		{token.IDENT, "i", 27, 8},
+		{token.LT, "<", 27, 10},
+		{token.INT, "10", 27, 12},
+		{token.RPAREN, ")", 27, 14},
+		{token.LBRACE, "{", 27, 16},
+		{token.LET, "let", 28, 5},
+		{token.IDENT, "i", 28, 9},
+		{token.ASSIGN, "=", 28, 11},
+		{token.IDENT, "i", 28, 13},
+		{token.PLUS, "+", 28, 15},
+		{token.INT, "1", 28, 17},
+		{token.SEMICOLON, ";", 28, 18},
+		{token.RBRACE, "}", 29, 1},
+		{token.EOF, "", 30, 1},
 	}
 
 	l := NewLexer(input)
