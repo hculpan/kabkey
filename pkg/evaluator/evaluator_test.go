@@ -8,6 +8,11 @@ import (
 	"github.com/hculpan/kabkey/pkg/parser"
 )
 
+func TestBuiltinFunctions(t *testing.T) {
+	input := `len("hello")`
+	testIntegerObject(t, testEval(input), 5)
+}
+
 func TestClosures(t *testing.T) {
 	input := `
 	let newAdder = fn(x) { 
@@ -279,6 +284,7 @@ func testEval(input string) object.Object {
 	p := parser.NewParser(l)
 	program := p.ParseProgram()
 	env := object.NewEnvironment()
+	LoadBuiltins(env)
 	return Eval(program, env)
 }
 

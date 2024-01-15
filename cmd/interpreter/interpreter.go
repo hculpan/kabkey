@@ -34,7 +34,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	o := evaluator.Eval(program, object.NewEnvironment())
+	env := object.NewEnvironment()
+	evaluator.LoadBuiltins(env)
+	o := evaluator.Eval(program, env)
 
 	if o != nil {
 		io.WriteString(os.Stdout, o.Inspect())

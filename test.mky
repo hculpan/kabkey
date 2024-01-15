@@ -1,6 +1,6 @@
 let a = 0
-let max = 100
+let max = 10
 while (a < max) {
     let a = a + 1
+    printf("The number is %d\n", a)
 }
-a

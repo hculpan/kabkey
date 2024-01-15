@@ -10,6 +10,8 @@ import (
 
 type ObjectType string
 
+type BuiltinFunction func(env *Environment, arg []Object) Object
+
 const (
 	INTEGER_OBJ  = "INTEGER"
 	BOOLEAN_OBJ  = "BOOLEAN"
@@ -118,9 +120,11 @@ func NewError(msg string, lineNo, position int) *Error {
 }
 
 type Function struct {
+	Name       string
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement
 	Env        *Environment
+	NativeImpl BuiltinFunction
 }
 
 func (f *Function) Type() ObjectType {

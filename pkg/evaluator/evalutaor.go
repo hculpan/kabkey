@@ -77,6 +77,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 }
 
 func applyFunction(node ast.Node, fn object.Object, args []object.Object) object.Object {
+	var evaluated object.Object
 	function, ok := fn.(*object.Function)
 	if !ok {
 		return newError(node, "not a function: %s", fn.Type())
@@ -84,7 +85,11 @@ func applyFunction(node ast.Node, fn object.Object, args []object.Object) object
 
 	extendedEnv := extendFunctionEnv(function, args)
 
-	evaluated := Eval(function.Body, extendedEnv)
+	if function.NativeImpl != nil {
+		evaluated = function.NativeImpl(extendedEnv, args)
+	} else {
+		evaluated = Eval(function.Body, extendedEnv)
+	}
 
 	return unwrapReturnValue(evaluated)
 }
