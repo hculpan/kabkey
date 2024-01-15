@@ -1,0 +1,6 @@
+let addAndDouble = fn(x, y) { (x + y) * 2 }
+
+let a = 23
+let b = 2
+let c = addAndDouble(a, b)
+c

@@ -9,6 +9,7 @@ import (
 
 type Node interface {
 	TokenLiteral() string
+	NodeToken() token.Token
 	String() string
 }
 
@@ -42,6 +43,10 @@ func (p *Program) String() string {
 	return out.String()
 }
 
+func (p *Program) NodeToken() token.Token {
+	return token.Token{Literal: "", LineNo: 1, Position: 1}
+}
+
 type LetStatement struct {
 	Token token.Token
 	Name  *Identifier
@@ -52,6 +57,10 @@ func (ls *LetStatement) statementNode() {}
 
 func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
+}
+
+func (ls *LetStatement) NodeToken() token.Token {
+	return ls.Token
 }
 
 func (ls *LetStatement) String() string {
@@ -81,6 +90,10 @@ func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
 }
 
+func (i *Identifier) NodeToken() token.Token {
+	return i.Token
+}
+
 func (i *Identifier) String() string {
 	return i.Value
 }
@@ -94,6 +107,10 @@ func (rs *ReturnStatement) statementNode() {}
 
 func (rs *ReturnStatement) TokenLiteral() string {
 	return rs.Token.Literal
+}
+
+func (rs *ReturnStatement) NodeToken() token.Token {
+	return rs.Token
 }
 
 func (rs *ReturnStatement) String() string {
@@ -119,12 +136,41 @@ func (es *ExpressionStatement) TokenLiteral() string {
 	return es.Token.Literal
 }
 
+func (es *ExpressionStatement) NodeToken() token.Token {
+	return es.Token
+}
+
 func (es *ExpressionStatement) String() string {
 	if es.Expression != nil {
 		return es.Expression.String()
 	}
 
 	return ""
+}
+
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (sl *StringLiteral) expressionNode() {}
+
+func (sl *StringLiteral) TokenLiteral() string {
+	return sl.Token.Literal
+}
+
+func (sl *StringLiteral) NodeToken() token.Token {
+	return sl.Token
+}
+
+func (sl *StringLiteral) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(`"`)
+	out.WriteString(sl.Value)
+	out.WriteString(`"`)
+
+	return out.String()
 }
 
 type IntegerLiteral struct {
@@ -136,6 +182,10 @@ func (il *IntegerLiteral) expressionNode() {}
 
 func (il *IntegerLiteral) TokenLiteral() string {
 	return il.Token.Literal
+}
+
+func (il *IntegerLiteral) NodeToken() token.Token {
+	return il.Token
 }
 
 func (il *IntegerLiteral) String() string {
@@ -152,6 +202,10 @@ func (pe *PrefixExpression) expressionNode() {}
 
 func (pe *PrefixExpression) TokenLiteral() string {
 	return pe.Token.Literal
+}
+
+func (pe *PrefixExpression) NodeToken() token.Token {
+	return pe.Token
 }
 
 func (pe *PrefixExpression) String() string {
@@ -178,6 +232,10 @@ func (ie *InfixExpression) TokenLiteral() string {
 	return ie.Token.Literal
 }
 
+func (ie *InfixExpression) NodeToken() token.Token {
+	return ie.Token
+}
+
 func (ie *InfixExpression) String() string {
 	var out bytes.Buffer
 
@@ -201,6 +259,10 @@ func (b *Boolean) TokenLiteral() string {
 	return b.Token.Literal
 }
 
+func (b *Boolean) NodeToken() token.Token {
+	return b.Token
+}
+
 func (b *Boolean) String() string {
 	return b.Token.Literal
 }
@@ -216,6 +278,10 @@ func (ie *IfExpression) expressionNode() {}
 
 func (ie *IfExpression) TokenLiteral() string {
 	return ie.Token.Literal
+}
+
+func (ie *IfExpression) NodeToken() token.Token {
+	return ie.Token
 }
 
 func (ie *IfExpression) String() string {
@@ -245,6 +311,10 @@ func (bs *BlockStatement) TokenLiteral() string {
 	return bs.Token.Literal
 }
 
+func (bs *BlockStatement) NodeToken() token.Token {
+	return bs.Token
+}
+
 func (bs *BlockStatement) String() string {
 	var out bytes.Buffer
 
@@ -265,6 +335,10 @@ func (fl *FunctionLiteral) expressionNode() {}
 
 func (fl *FunctionLiteral) TokenLiteral() string {
 	return fl.Token.Literal
+}
+
+func (fl *FunctionLiteral) NodeToken() token.Token {
+	return fl.Token
 }
 
 func (fl *FunctionLiteral) String() string {
@@ -295,6 +369,10 @@ func (ce *CallExpression) expressionNode() {}
 
 func (ce *CallExpression) TokenLiteral() string {
 	return ce.Token.Literal
+}
+
+func (ce *CallExpression) NodeToken() token.Token {
+	return ce.Token
 }
 
 func (ce *CallExpression) String() string {

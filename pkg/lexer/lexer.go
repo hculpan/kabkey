@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/hculpan/kabkey/pkg/token"
+import (
+	"fmt"
+
+	"github.com/hculpan/kabkey/pkg/token"
+)
 
 type Lexer struct {
 	input        string
@@ -9,12 +13,18 @@ type Lexer struct {
 	lineNo       int
 	linePosition int
 	ch           byte
+	errors       []string
 }
 
 func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input, lineNo: 1, linePosition: 0}
+	l.errors = []string{}
 	l.readChar()
 	return l
+}
+
+func (l *Lexer) Errors() []string {
+	return l.errors
 }
 
 func (l *Lexer) NextToken() token.Token {
@@ -31,6 +41,10 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, l.ch, l.lineNo, l.linePosition)
 		}
+	case '"':
+		val := l.readString()
+		tok = newToken(token.STRING, ' ', l.lineNo, l.linePosition-len(val)-1)
+		tok.Literal = val
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch, l.lineNo, l.linePosition)
 	case '(':
@@ -89,6 +103,23 @@ func (l *Lexer) NextToken() token.Token {
 	l.readChar()
 
 	return tok
+}
+
+func (l *Lexer) readString() string {
+	result := ""
+
+	l.readChar() // skip over current quote
+
+	for l.ch != '"' {
+		if l.ch == '\n' || l.ch == '\r' || l.position >= len(l.input) {
+			l.addError(l.lineNo, l.linePosition, "string not terminated with closing quote")
+			break
+		}
+		result += string(l.ch)
+		l.readChar()
+	}
+
+	return result
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -154,4 +185,9 @@ func (l *Lexer) peekChar() byte {
 	} else {
 		return l.input[l.readPosition]
 	}
+}
+
+func (l *Lexer) addError(lineNo, position int, format string, a ...interface{}) {
+	msg := fmt.Sprintf("[%d:%d] %s", lineNo, position, fmt.Sprintf(format, a...))
+	l.errors = append(l.errors, msg)
 }

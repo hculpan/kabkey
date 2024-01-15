@@ -12,3 +12,4 @@ test:
 	go test ./pkg/lexer/
 	go test ./pkg/parser/
 	go test ./pkg/ast
+	go test ./pkg/evaluator

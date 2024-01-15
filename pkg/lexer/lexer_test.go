@@ -1,10 +1,30 @@
 package lexer
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/hculpan/kabkey/pkg/token"
 )
+
+func TestString(t *testing.T) {
+	input := `"hello world!"`
+	l := NewLexer(input)
+	tok := l.NextToken()
+	if len(l.Errors()) != 0 {
+		for _, e := range l.Errors() {
+			fmt.Println(e)
+		}
+	}
+
+	if tok.Type != token.STRING {
+		t.Fatalf("expected type %q, got %q", token.STRING, tok.Type)
+	}
+
+	if tok.Literal != "hello world!" {
+		t.Fatalf("expected literal %q, got %q", "hello world!", tok.Literal)
+	}
+}
 
 func TestNextToken(t *testing.T) {
 	input := `let five = 5;
@@ -29,6 +49,8 @@ if (5 < 10) {
 10 == 10;
 
 10 != 9;
+
+let a = "This is a string!";
 `
 
 	tests := []struct {
@@ -109,7 +131,12 @@ if (5 < 10) {
 		{token.NOT_EQ, "!=", 22, 4},
 		{token.INT, "9", 22, 7},
 		{token.SEMICOLON, ";", 22, 8},
-		{token.EOF, "", 23, 1},
+		{token.LET, "let", 24, 1},
+		{token.IDENT, "a", 24, 5},
+		{token.ASSIGN, "=", 24, 7},
+		{token.STRING, "This is a string!", 24, 9},
+		{token.SEMICOLON, ";", 24, 28},
+		{token.EOF, "", 25, 1},
 	}
 
 	l := NewLexer(input)
