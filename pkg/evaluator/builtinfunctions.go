@@ -12,6 +12,24 @@ var builtins = map[string]object.BuiltinFunction{
 	"println": println,
 	"len":     length,
 	"printf":  printf,
+	"inspect": inspect,
+	"type":    typeout,
+}
+
+func typeout(env *object.Environment, args []object.Object) object.Object {
+	if len(args) != 1 {
+		return &object.Error{Message: fmt.Sprintf("incorrect number of paramets to 'typeout': expected 1, got %d", len(args))}
+	}
+
+	return &object.String{Value: string(args[0].Type())}
+}
+
+func inspect(env *object.Environment, args []object.Object) object.Object {
+	if len(args) != 1 {
+		return &object.Error{Message: fmt.Sprintf("incorrect number of paramets to 'inspect': expected 1, got %d", len(args))}
+	}
+
+	return &object.String{Value: args[0].Inspect()}
 }
 
 func printf(env *object.Environment, args []object.Object) object.Object {

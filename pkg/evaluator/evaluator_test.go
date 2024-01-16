@@ -85,13 +85,13 @@ func TestErrorHandling(t *testing.T) {
 		input           string
 		expectedMessage string
 	}{
-		{"5 + true;", "type mismatch: INTEGER + BOOLEAN"},
-		{"5 + true; 5;", "type mismatch: INTEGER + BOOLEAN"},
+		{"5 + true;", "unsupported operation: INTEGER + BOOLEAN"},
+		{"5 + true; 5;", "unsupported operation: INTEGER + BOOLEAN"},
 		{"-true", "unknown operator: -BOOLEAN"},
-		{"true + false;", "unknown operator: BOOLEAN + BOOLEAN"},
-		{"5; true + false; 5", "unknown operator: BOOLEAN + BOOLEAN"},
-		{"if (10 > 1) { true + false; }", "unknown operator: BOOLEAN + BOOLEAN"},
-		{`if (10 > 1) { if (10 > 1) { return true + false; } return 1; } `, "unknown operator: BOOLEAN + BOOLEAN"},
+		{"true + false;", "unsupported operation: BOOLEAN + BOOLEAN"},
+		{"5; true + false; 5", "unsupported operation: BOOLEAN + BOOLEAN"},
+		{"if (10 > 1) { true + false; }", "unsupported operation: BOOLEAN + BOOLEAN"},
+		{`if (10 > 1) { if (10 > 1) { return true + false; } return 1; } `, "unsupported operation: BOOLEAN + BOOLEAN"},
 		{"foobar", "identifier not found: foobar"},
 	}
 
@@ -216,6 +216,10 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"1 > 2", false},
 		{"1 < 1", false},
 		{"1 > 1", false},
+		{"1 <= 1", true},
+		{"1 >= 1", true},
+		{"2 <= 1", false},
+		{"0 >= 1", false},
 		{"1 == 1", true},
 		{"1 != 1", false},
 		{"1 == 2", false},
@@ -229,6 +233,12 @@ func TestEvalBooleanExpression(t *testing.T) {
 		{"(1 < 2) == false", false},
 		{"(1 > 2) == true", false},
 		{"(1 > 2) == false", true},
+		{"true && true == true", true},
+		{"true && false == false", true},
+		{"true || true == true", true},
+		{"true || false == true", true},
+		{"false || false == false", true},
+		{"(1 == 5) || (1 < 5)", true},
 	}
 
 	for _, tt := range tests {

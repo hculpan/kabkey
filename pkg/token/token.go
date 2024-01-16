@@ -23,7 +23,9 @@ const (
 	ASTERISK  = "*"
 	SLASH     = "/"
 	LT        = "<"
+	LTE       = "<="
 	GT        = ">"
+	GTE       = ">="
 	COMMA     = ","
 	SEMICOLON = ";"
 	LPAREN    = "("
@@ -42,6 +44,8 @@ const (
 	ELSE      = "ELSE"
 	STRING    = "STRING"
 	WHILE     = "WHILE"
+	OR        = "||"
+	AND       = "&&"
 )
 
 var keywords = map[string]TokenType{

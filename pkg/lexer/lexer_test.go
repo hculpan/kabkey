@@ -56,6 +56,12 @@ let i = 0;
 while (i < 10) {
     let i = i + 1;
 }
+
+a && a
+a || a
+
+a <= a
+a >= a
 `
 
 	tests := []struct {
@@ -161,7 +167,19 @@ while (i < 10) {
 		{token.INT, "1", 28, 17},
 		{token.SEMICOLON, ";", 28, 18},
 		{token.RBRACE, "}", 29, 1},
-		{token.EOF, "", 30, 1},
+		{token.IDENT, "a", 31, 1},
+		{token.AND, "&&", 31, 3},
+		{token.IDENT, "a", 31, 6},
+		{token.IDENT, "a", 32, 1},
+		{token.OR, "||", 32, 3},
+		{token.IDENT, "a", 32, 6},
+		{token.IDENT, "a", 34, 1},
+		{token.LTE, "<=", 34, 3},
+		{token.IDENT, "a", 34, 6},
+		{token.IDENT, "a", 35, 1},
+		{token.GTE, ">=", 35, 3},
+		{token.IDENT, "a", 35, 6},
+		{token.EOF, "", 36, 1},
 	}
 
 	l := NewLexer(input)

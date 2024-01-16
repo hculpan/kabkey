@@ -201,17 +201,16 @@ func evalInfixExpression(node *ast.InfixExpression, env *object.Environment) obj
 		return evalIntegerInfixExpression(node, left, right)
 	case left.Type() == object.STRING_OBJ && right.Type() == object.STRING_OBJ:
 		return evalStringInfixExpression(node, left, right)
-	case left.Type() != right.Type():
-		return newError(node, "type mismatch: %s %s %s", left.Type(), node.Operator, right.Type())
-	}
-
-	switch {
 	case node.Operator == "==":
 		return nativeBoolToBooleanObject(left == right)
 	case node.Operator == "!=":
 		return nativeBoolToBooleanObject(left != right)
+	case node.Operator == "&&":
+		return nativeBoolToBooleanObject(isTruthy(left) && isTruthy(right))
+	case node.Operator == "||":
+		return nativeBoolToBooleanObject(isTruthy(left) || isTruthy(right))
 	default:
-		return newError(node, "unknown operator: %s %s %s", left.Type(), node.Operator, right.Type())
+		return newError(node, "unsupported operation: %s %s %s", left.Type(), node.Operator, right.Type())
 	}
 }
 
@@ -246,8 +245,12 @@ func evalIntegerInfixExpression(node *ast.InfixExpression, left, right object.Ob
 		return &object.Integer{Value: leftVal / rightVal}
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
+	case "<=":
+		return nativeBoolToBooleanObject(leftVal <= rightVal)
 	case ">":
 		return nativeBoolToBooleanObject(leftVal > rightVal)
+	case ">=":
+		return nativeBoolToBooleanObject(leftVal >= rightVal)
 	case "==":
 		return nativeBoolToBooleanObject(leftVal == rightVal)
 	case "!=":

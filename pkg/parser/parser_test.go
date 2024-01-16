@@ -292,6 +292,9 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{"-(5 + 5)", "(-(5 + 5))"},
 		{"!(true == true)", "(!(true == true))"},
 		{`"a" == "a"`, `("a" == "a")`},
+		{"a && b == c || d", "((a && b) == (c || d))"},
+		{"a + 2 && b == c || d", "(((a + 2) && b) == (c || d))"},
+		{"(1 < 5) || (1 == 5)", "((1 < 5) || (1 == 5))"},
 	}
 	for i, tt := range tests {
 		l := lexer.NewLexer(tt.input)
@@ -320,6 +323,10 @@ func TestParsingInfixExpression(t *testing.T) {
 		{"5 < 5;", 5, "<", 5},
 		{"5 == 5;", 5, "==", 5},
 		{"5 != 5;", 5, "!=", 5},
+		{"5 <= 5;", 5, "<=", 5},
+		{"5 >= 5;", 5, ">=", 5},
+		{"5 && 5;", 5, "&&", 5},
+		{"5 || 5;", 5, "||", 5},
 		{"foobar + barfoo;", "foobar", "+", "barfoo"},
 		{"foobar - barfoo;", "foobar", "-", "barfoo"},
 		{"foobar * barfoo;", "foobar", "*", "barfoo"},

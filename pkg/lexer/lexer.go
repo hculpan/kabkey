@@ -41,6 +41,22 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, l.ch, l.lineNo, l.linePosition)
 		}
+	case '|':
+		if l.peekChar() == '|' {
+			tok = newToken(token.OR, '|', l.lineNo, l.linePosition)
+			tok.Literal = "||"
+			l.readChar()
+		} else {
+			tok = newToken(token.ILLEGAL, l.ch, l.lineNo, l.linePosition)
+		}
+	case '&':
+		if l.peekChar() == '&' {
+			tok = newToken(token.AND, '&', l.lineNo, l.linePosition)
+			tok.Literal = "&&"
+			l.readChar()
+		} else {
+			tok = newToken(token.ILLEGAL, l.ch, l.lineNo, l.linePosition)
+		}
 	case '"':
 		val := l.readString()
 		tok = newToken(token.STRING, ' ', l.lineNo, l.linePosition-len(val)-1)
@@ -74,9 +90,21 @@ func (l *Lexer) NextToken() token.Token {
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch, l.lineNo, l.linePosition)
 	case '<':
-		tok = newToken(token.LT, l.ch, l.lineNo, l.linePosition)
+		if l.peekChar() == '=' {
+			tok = newToken(token.LTE, l.ch, l.lineNo, l.linePosition)
+			tok.Literal = "<="
+			l.readChar()
+		} else {
+			tok = newToken(token.LT, l.ch, l.lineNo, l.linePosition)
+		}
 	case '>':
-		tok = newToken(token.GT, l.ch, l.lineNo, l.linePosition)
+		if l.peekChar() == '=' {
+			tok = newToken(token.GTE, l.ch, l.lineNo, l.linePosition)
+			tok.Literal = ">="
+			l.readChar()
+		} else {
+			tok = newToken(token.GT, l.ch, l.lineNo, l.linePosition)
+		}
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF

@@ -36,13 +36,7 @@ func main() {
 
 	env := object.NewEnvironment()
 	evaluator.LoadBuiltins(env)
-	o := evaluator.Eval(program, env)
-
-	if o != nil {
-		io.WriteString(os.Stdout, o.Inspect())
-		io.WriteString(os.Stdout, "\n")
-	}
-
+	evaluator.Eval(program, env)
 }
 
 func printErrors(out io.Writer, errors []string) {
